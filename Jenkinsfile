@@ -23,7 +23,7 @@ pipeline {
                     dir('kubernetes') {
                         sh "aws eks update-kubeconfig --name myapp-eks-cluster"
                         sh "kubectl apply -f kustomization.yaml"
-                        sh "kubectl replace --force -f wp-resource.yaml"
+                        sh "kubectl replace --force -k ./"
                     }
                 }
             }
