@@ -1,24 +1,38 @@
 module "eks" {
-  source          = "terraform-aws-modules/eks/aws"
-  version         = "~> 19.0"
-  cluster_name    = "myapp-eks-cluster"
-  cluster_version = "1.24"
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 19.0"
 
-  cluster_endpoint_public_access = true
+  cluster_name    = "my-cluster"
+  cluster_version = "1.28"
 
-  vpc_id     = module.myapp-vpc.vpc_id
-  subnet_ids = module.myapp-vpc.private_subnets
+  cluster_endpoint_public_access  = true
 
-  tags = {
-    environment = "development"
-    application = "myapp"
+  cluster_addons = {
+    coredns = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent = true
+    }
+  }
+
+  vpc_id                   = module.myapp-vpc.vpc_id
+  subnet_ids               = module.myapp-vpc.private_subnets
+
+  # EKS Managed Node Group(s)
+  eks_managed_node_group_defaults = {
+    instance_types = ["t2.micro"]
   }
 
   eks_managed_node_groups = {
-    dev = {
+    blue = {}
+    green = {
       min_size     = 1
-      max_size     = 3
-      desired_size = 2
+      max_size     = 10
+      desired_size = 1
 
       instance_types = ["t2.micro"]
     }
