@@ -22,7 +22,7 @@ pipeline {
                 script {
                     dir('kubernetes') {
                         sh "aws eks update-kubeconfig --name myapp-eks-cluster"
-                        sh "kubectl replace --force -k ./"
+                        sh "kubectl apply -k ./"
                     }
                 }
             }
